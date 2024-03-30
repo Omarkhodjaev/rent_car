@@ -1,9 +1,11 @@
+import { BaseEntity } from 'src/common/database/base.entity';
 import { RoleEnum } from 'src/common/enums/enum';
 import { CompanyEntity } from 'src/modules/company/entities/company.entity';
 import { FileEntity } from 'src/modules/file/entities/file.entity';
-import { Column, JoinColumn, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 
-export class UserEntity {
+@Entity('users')
+export class UserEntity extends BaseEntity{
   @Column({ name: 'phone_number', type: 'text', unique: true, nullable: false })
   phoneNumber: string;
 
