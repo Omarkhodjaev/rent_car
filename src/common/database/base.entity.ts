@@ -16,9 +16,9 @@ import {
     createdAt: Date;
   
     @UpdateDateColumn({
-      name: 'last_update_at',
+      name: 'last_edited_at',
       type: 'timestamp',
       nullable: false,
     })
-    lastUpdateAt: Date;
+    lastEditedAt: Date;
   }
