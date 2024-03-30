@@ -1,6 +1,7 @@
 import { RoleEnum } from 'src/common/enums/enum';
+import { CompanyEntity } from 'src/modules/company/entities/company.entity';
 import { FileEntity } from 'src/modules/file/entities/file.entity';
-import { Column, JoinColumn, OneToOne } from 'typeorm';
+import { Column, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 
 export class UserEntity {
   @Column({ name: 'phone_number', type: 'text', unique: true, nullable: false })
@@ -13,6 +14,10 @@ export class UserEntity {
   role: RoleEnum;
 
   @OneToOne(() => FileEntity, (file) => file.user)
-  @JoinColumn({ name: 'file_id' })
+  @JoinColumn({ name: 'avatar' })
   avatar: FileEntity;
+
+  @OneToMany(() => CompanyEntity, (company) => company.owner)
+  @JoinColumn({ name: 'company_id' })
+  companyId: CompanyEntity;
 }
