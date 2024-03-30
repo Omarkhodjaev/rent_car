@@ -6,7 +6,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 @Entity('files')
 export class FileEntity extends BaseEntity {
   @Column({ type: 'text', nullable: false })
-  ulr: string;
+  url: string;
 
   @Column({ type: 'text', length: 256, nullable: false })
   mimeType: string;

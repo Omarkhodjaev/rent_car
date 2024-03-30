@@ -1,8 +1,9 @@
 import { BaseEntity } from 'src/common/database/base.entity';
 import { CompanyEntity } from 'src/modules/company/entities/company.entity';
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity('models')
+@Index(['name', 'company_id'], { unique: true })
 export class ModelEntity extends BaseEntity {
   @Column({ name: 'name', type: 'varchar', unique: true, nullable: false })
   name: string;
