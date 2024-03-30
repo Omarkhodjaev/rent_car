@@ -6,7 +6,7 @@ export class CompanyEntity extends BaseEntity {
   @Column({ name: 'name', type: 'varchar', unique: true, nullable: false })
   name: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.companyId)
+  @ManyToOne(() => UserEntity, (user) => user.companyId, { nullable: false })
   @JoinColumn({ name: 'avatar' })
   owner: UserEntity;
 
