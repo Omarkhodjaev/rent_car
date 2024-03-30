@@ -14,7 +14,7 @@ export class FileEntity extends BaseEntity {
   @Column({ type: 'int', nullable: false })
   size: number;
 
-  @ManyToOne(() => CarEntity, (car) => car.files, {
+  @ManyToOne(() => CarEntity, (car) => car.info, {
     onDelete: 'CASCADE',
     nullable: true,
   })

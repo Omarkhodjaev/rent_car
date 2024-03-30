@@ -5,7 +5,7 @@ import { FileEntity } from 'src/modules/file/entities/file.entity';
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 
 @Entity('users')
-export class UserEntity extends BaseEntity{
+export class UserEntity extends BaseEntity {
   @Column({ name: 'phone_number', type: 'text', unique: true, nullable: false })
   phoneNumber: string;
 
@@ -21,5 +21,5 @@ export class UserEntity extends BaseEntity{
 
   @OneToMany(() => CompanyEntity, (company) => company.owner)
   @JoinColumn({ name: 'company_id' })
-  companyId: CompanyEntity;
+  companyId: Array<CompanyEntity>;
 }
