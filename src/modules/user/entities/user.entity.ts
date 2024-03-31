@@ -2,7 +2,7 @@ import { BaseEntity } from 'src/common/database/base.entity';
 import { RoleEnum } from 'src/common/enums/enum';
 import { CompanyEntity } from 'src/modules/company/entities/company.entity';
 import { FileEntity } from 'src/modules/file/entities/file.entity';
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -19,7 +19,7 @@ export class UserEntity extends BaseEntity {
   @JoinColumn({ name: 'avatar' })
   avatar: FileEntity;
 
-  @OneToMany(() => CompanyEntity, (company) => company.owner)
+  @ManyToOne(() => CompanyEntity, (company) => company.id, { nullable: true })
   @JoinColumn({ name: 'company_id' })
-  companyId: Array<CompanyEntity>;
+  companyId: CompanyEntity;
 }
