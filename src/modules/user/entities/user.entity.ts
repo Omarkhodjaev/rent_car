@@ -2,7 +2,15 @@ import { BaseEntity } from 'src/common/database/base.entity';
 import { RoleEnum } from 'src/common/enums/enum';
 import { CompanyEntity } from 'src/modules/company/entities/company.entity';
 import { FileEntity } from 'src/modules/file/entities/file.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import { TransactionEntity } from 'src/modules/transaction/entities/transaction.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -29,5 +37,9 @@ export class UserEntity extends BaseEntity {
   @JoinColumn({ name: 'company_id' })
   company: CompanyEntity;
 
-
+  @OneToMany(
+    () => TransactionEntity,
+    (TransactionEntity) => TransactionEntity.user,
+  )
+  transactions: TransactionEntity[];
 }

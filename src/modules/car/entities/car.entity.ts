@@ -3,6 +3,7 @@ import { FileEntity } from 'src/modules/file/entities/file.entity'; // Correct t
 import { ModelEntity } from 'src/modules/model/entities/model.entity'; // Correct the path if needed
 import { BaseEntity } from 'src/common/database/base.entity';
 import { CompanyEntity } from 'src/modules/company/entities/company.entity';
+import { TransactionEntity } from 'src/modules/transaction/entities/transaction.entity';
 
 @Entity('cars')
 export class CarEntity extends BaseEntity {
@@ -22,4 +23,10 @@ export class CarEntity extends BaseEntity {
   @ManyToOne(() => CompanyEntity, (CompanyEntity) => CompanyEntity.cars)
   @JoinColumn({ name: 'company_id' })
   company: CompanyEntity;
+
+  @OneToMany(
+    () => TransactionEntity,
+    (TransactionEntity) => TransactionEntity.car,
+  )
+  transactions: TransactionEntity[];
 }

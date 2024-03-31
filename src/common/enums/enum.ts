@@ -11,7 +11,7 @@ export enum StatusEnum {
   CREDIT = 'credit',
 }
 
-export enum StatusTrack {
+export enum StatusTrackeEnum {
   CREATED = 'created',
   PROGRESS = 'progress',
   DONE = 'done',
