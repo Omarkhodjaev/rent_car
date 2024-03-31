@@ -6,5 +6,28 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
- 
+  @Column({ type: 'varchar', length: 256, unique: true, nullable: false })
+  phone: number;
+
+  @Column({ name: 'full_name', type: 'varchar', length: 256, nullable: false })
+  fullName: string;
+
+  @Column({ type: 'enum', enum: RoleEnum, nullable: false })
+  role: RoleEnum;
+
+  @OneToOne(() => FileEntity, {
+    onDelete: 'SET NULL',
+    nullable: false,
+  })
+  @JoinColumn()
+  avatar: FileEntity;
+
+  @ManyToOne(() => CompanyEntity, (CompanyEntity) => CompanyEntity.users, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'company_id' })
+  company: CompanyEntity;
+
+
 }

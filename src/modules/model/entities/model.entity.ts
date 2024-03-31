@@ -11,7 +11,21 @@ import {
 } from 'typeorm';
 
 @Entity('models')
-// @Index(['name', 'company_id'], { unique: true })
+@Index(['name', 'company_id'], { unique: true })
 export class ModelEntity extends BaseEntity {
-  
+  @Column({ type: 'varchar', length: 255, nullable: false })
+  name: string;
+
+  @Column({ nullable: true })
+  company_id: number;
+
+  @ManyToOne(() => CompanyEntity, (company) => company.id, {
+    onDelete: 'CASCADE',
+    nullable: true,
+  })
+  @JoinColumn({ name: 'company_id' })
+  company: CompanyEntity;
+
+  @OneToMany(() => CarEntity, (CarEntity) => CarEntity.model)
+  cars: ModelEntity[];
 }

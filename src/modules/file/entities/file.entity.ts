@@ -1,6 +1,5 @@
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { CarEntity } from 'src/modules/car/entities/car.entity'; // Correct the path if needed
-import { UserEntity } from 'src/modules/user/entities/user.entity'; // Correct the path if needed
+import { CarEntity } from 'src/modules/car/entities/car.entity';
 import { BaseEntity } from 'src/common/database/base.entity';
 
 @Entity('files')
