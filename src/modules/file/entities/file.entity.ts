@@ -1,26 +1,23 @@
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { CarEntity } from 'src/modules/car/entities/car.entity'; // Correct the path if needed
+import { UserEntity } from 'src/modules/user/entities/user.entity'; // Correct the path if needed
 import { BaseEntity } from 'src/common/database/base.entity';
-import { CarEntity } from 'src/modules/car/entities/car.entity';
-import { UserEntity } from 'src/modules/user/entities/user.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
 @Entity('files')
 export class FileEntity extends BaseEntity {
   @Column({ type: 'text', nullable: false })
   url: string;
 
-  @Column({ type: 'text', length: 256, nullable: false })
+  @Column({ type: 'text', nullable: false })
   mimeType: string;
 
   @Column({ type: 'int', nullable: false })
   size: number;
 
-  @ManyToOne(() => CarEntity, (car) => car.info, {
+  @ManyToOne(() => CarEntity, (car) => car.id, {
     onDelete: 'CASCADE',
     nullable: true,
   })
   @JoinColumn({ name: 'car_id' })
   car: CarEntity;
-
-  @OneToOne(() => UserEntity, (user) => user.avatar)
-  user: UserEntity;
 }
