@@ -19,5 +19,9 @@ export enum StatusTrackeEnum {
 
 export enum RedisKeys {
   ALL_USERS = 'ALL_USERS',
-  All_FILES = "ALL_FILES"
+  All_FILES = 'ALL_FILES',
+  All_MODELS = 'ALL_MODELS',
+  ALL_COMPANIES = 'ALL_COMPANIES',
+  ALL_CARS = 'ALL_CARS',
+
 }

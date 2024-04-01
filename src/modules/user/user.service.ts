@@ -8,6 +8,7 @@ import { Cache } from 'cache-manager';
 import { ID } from 'src/common/types/type';
 import { UserNotFoundException } from './exception/user.exception';
 import { IUserRepository } from './interfaces/user.repository';
+import { RedisKeys } from 'src/common/enums/enum';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -18,6 +19,8 @@ export class UserService implements IUserService {
   ) {}
 
   async create(dto: CreateAuthDto): Promise<ResData<UserEntity>> {
+    await this.deleteDataInRedis(RedisKeys.ALL_USERS);
+
     const userEntity = await this.repository.createEntity(dto);
 
     const data = await this.repository.create(userEntity);
@@ -30,6 +33,8 @@ export class UserService implements IUserService {
   }
 
   async update(id: ID, dto: UpdateUserDto): Promise<ResData<UserEntity>> {
+    await this.deleteDataInRedis(RedisKeys.ALL_USERS);
+
     const { data: foundUser } = await this.findOne(id);
 
     if (!foundUser) {
@@ -65,6 +70,8 @@ export class UserService implements IUserService {
   }
 
   async delete(id: ID): Promise<ResData<UserEntity>> {
+    await this.deleteDataInRedis(RedisKeys.ALL_USERS);
+
     const { data: foundUser } = await this.findOne(id);
 
     const deletedData = await this.repository.remove(foundUser);
@@ -74,5 +81,9 @@ export class UserService implements IUserService {
       HttpStatus.OK,
       deletedData,
     );
+  }
+
+  private async deleteDataInRedis(key: RedisKeys) {
+    await this.cacheManager.del(key);
   }
 }

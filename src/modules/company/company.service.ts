@@ -7,6 +7,7 @@ import { ResData } from 'src/lib/resData';
 import { ID } from 'src/common/types/type';
 import { CompanyNotFoundException } from './exception/company.exception';
 import { Cache } from 'cache-manager';
+import { RedisKeys } from 'src/common/enums/enum';
 
 @Injectable()
 export class CompanyService {
@@ -17,6 +18,8 @@ export class CompanyService {
   ) {}
 
   async create(dto: CreateCompanyDto): Promise<ResData<CompanyEntity>> {
+    await this.deleteDataInRedis(RedisKeys.ALL_COMPANIES);
+
     const entity = await this.repository.createEntity(dto);
     const data = await this.repository.create(entity);
 
@@ -51,6 +54,8 @@ export class CompanyService {
   }
 
   async remove(id: ID): Promise<ResData<CompanyEntity>> {
+    await this.deleteDataInRedis(RedisKeys.ALL_COMPANIES);
+
     const { data: foundCompany } = await this.findOne(id);
 
     const data = await this.repository.delete(foundCompany);
@@ -63,6 +68,8 @@ export class CompanyService {
   }
 
   async update(id: ID, dto: CreateCompanyDto): Promise<ResData<CompanyEntity>> {
+    await this.deleteDataInRedis(RedisKeys.ALL_COMPANIES);
+
     const { data: foundCompany } = await this.findOne(id);
 
     const entity = await this.repository.createEntity(dto);
@@ -76,5 +83,9 @@ export class CompanyService {
       HttpStatus.OK,
       data,
     );
+  }
+
+  private async deleteDataInRedis(key: RedisKeys) {
+    await this.cacheManager.del(key);
   }
 }

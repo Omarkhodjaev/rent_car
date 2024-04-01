@@ -8,11 +8,14 @@ import {
   Delete,
   Inject,
   ParseIntPipe,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
+import { RedisKeys } from 'src/common/enums/enum';
 
 @ApiTags('company')
 @Controller('company')
@@ -26,7 +29,9 @@ export class CompanyController {
   create(@Body() createCompanyDto: CreateCompanyDto) {
     return this.companyService.create(createCompanyDto);
   }
-
+  @UseInterceptors(CacheInterceptor)
+  @CacheKey(RedisKeys.ALL_COMPANIES)
+  @CacheTTL(0)
   @Get()
   findAll() {
     return this.companyService.findAll();

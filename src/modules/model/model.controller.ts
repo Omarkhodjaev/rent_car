@@ -1,17 +1,37 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Inject,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ModelService } from './model.service';
 import { CreateModelDto } from './dto/create-model.dto';
 import { UpdateModelDto } from './dto/update-model.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
+import { RedisKeys } from 'src/common/enums/enum';
 
+@ApiTags('model')
 @Controller('model')
 export class ModelController {
-  constructor(private readonly modelService: ModelService) {}
+  constructor(
+    @Inject('IModelService')
+    private readonly modelService: ModelService,
+  ) {}
 
   @Post()
   create(@Body() createModelDto: CreateModelDto) {
     return this.modelService.create(createModelDto);
   }
 
+  @UseInterceptors(CacheInterceptor)
+  @CacheKey(RedisKeys.All_MODELS)
+  @CacheTTL(0)
   @Get()
   findAll() {
     return this.modelService.findAll();

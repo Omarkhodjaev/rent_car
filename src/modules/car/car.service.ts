@@ -7,6 +7,7 @@ import { ICarRepository } from './interfaces/car.repository';
 import { Cache } from 'cache-manager';
 import { ID } from 'src/common/types/type';
 import { CarNotFoundException } from './exception/car.exception';
+import { RedisKeys } from 'src/common/enums/enum';
 
 @Injectable()
 export class CarService implements ICarService {
@@ -17,6 +18,8 @@ export class CarService implements ICarService {
   ) {}
 
   async create(dto: CreateCarDto): Promise<ResData<CarEntity>> {
+    await this.deleteDataInRedis(RedisKeys.ALL_CARS);
+
     const entity = await this.repository.createEntity(dto);
     const data = await this.repository.create(entity);
 
@@ -47,6 +50,8 @@ export class CarService implements ICarService {
   }
 
   async remove(id: ID): Promise<ResData<CarEntity>> {
+    await this.deleteDataInRedis(RedisKeys.ALL_CARS);
+
     const { data: foundCar } = await this.findOne(id);
 
     const data = await this.repository.delete(foundCar);
@@ -55,6 +60,8 @@ export class CarService implements ICarService {
   }
 
   async update(id: ID, dto: CreateCarDto): Promise<ResData<CarEntity>> {
+    await this.deleteDataInRedis(RedisKeys.ALL_CARS);
+
     const { data: foundCar } = await this.findOne(id);
 
     const entity = await this.repository.createEntity(dto);
@@ -73,5 +80,9 @@ export class CarService implements ICarService {
       HttpStatus.OK,
       data,
     );
+  }
+
+  private async deleteDataInRedis(key: RedisKeys) {
+    await this.cacheManager.del(key);
   }
 }

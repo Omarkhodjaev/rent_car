@@ -8,6 +8,7 @@ import {
   Delete,
   ParseIntPipe,
   Inject,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,6 +17,8 @@ import { UserAlreadyExistException } from './exception/user.exception';
 import { ID } from 'src/common/types/type';
 import { IUserService } from './interfaces/user.service';
 import { ApiTags } from '@nestjs/swagger';
+import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
+import { RedisKeys } from 'src/common/enums/enum';
 
 @ApiTags('user')
 @Controller('user')
@@ -38,11 +41,16 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @UseInterceptors(CacheInterceptor)
+  @CacheKey(RedisKeys.ALL_USERS)
+  @CacheTTL(0)
   @Get()
   findAll() {
     return this.userService.findAll();
   }
 
+
+  
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: ID) {
     return this.userService.findOne(id);

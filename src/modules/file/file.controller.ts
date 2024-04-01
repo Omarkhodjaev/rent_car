@@ -17,7 +17,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { IFileService } from './interfaces/File.service';
 import { fileOption } from 'src/lib/file';
-import { config } from 'src/common/config';
 import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { RedisKeys } from 'src/common/enums/enum';
 
@@ -79,10 +78,6 @@ export class FileController {
     return await this.fileService.findAll();
   }
 
-
-  @UseInterceptors(CacheInterceptor)
-  @CacheKey(RedisKeys.All_FILES)
-  @CacheTTL(0)
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.fileService.findOne(id);
