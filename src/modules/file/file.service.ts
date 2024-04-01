@@ -25,6 +25,7 @@ export class FileService implements IFileService {
 
   async findOne(id: ID): Promise<ResData<FileEntity>> {
     const data = await this.repository.findOneById(id);
+
     if (!data) {
       throw new FileNotFounException();
     }
@@ -40,6 +41,7 @@ export class FileService implements IFileService {
 
   async remove(id: number): Promise<ResData<FileEntity>> {
     const { data: foundFile } = await this.findOne(id);
+
     await this.deleteDataInRedis(RedisKeys.All_FILES);
 
     if (!foundFile) {
