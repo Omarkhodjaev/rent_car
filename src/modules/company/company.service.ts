@@ -1,26 +1,80 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
+import { ICompanyRepository } from './interfaces/company.repository';
+import { CompanyEntity } from './entities/company.entity';
+import { ResData } from 'src/lib/resData';
+import { ID } from 'src/common/types/type';
+import { CompanyNotFoundException } from './exception/company.exception';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class CompanyService {
-  create(createCompanyDto: CreateCompanyDto) {
-    return 'This action adds a new company';
+  constructor(
+    @Inject('ICompanyRepository')
+    private readonly repository: ICompanyRepository,
+    @Inject('CACHE_MANAGER') private cacheManager: Cache,
+  ) {}
+
+  async create(dto: CreateCompanyDto): Promise<ResData<CompanyEntity>> {
+    const entity = await this.repository.createEntity(dto);
+    const data = await this.repository.create(entity);
+
+    return new ResData<CompanyEntity>(
+      'Created successfully',
+      HttpStatus.CREATED,
+      data,
+    );
   }
 
-  findAll() {
-    return `This action returns all company`;
+  async findAll(): Promise<ResData<CompanyEntity[]>> {
+    const data = await this.repository.findAll();
+    return new ResData<CompanyEntity[]>(
+      'Found all successfully',
+      HttpStatus.OK,
+      data,
+    );
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} company`;
+  async findOne(id: ID): Promise<ResData<CompanyEntity>> {
+    const data = await this.repository.findOneById(id);
+
+    if (!data) {
+      throw new CompanyNotFoundException();
+    }
+
+    return new ResData<CompanyEntity>(
+      'Found successfully',
+      HttpStatus.OK,
+      data,
+    );
   }
 
-  update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    return `This action updates a #${id} company`;
+  async remove(id: ID): Promise<ResData<CompanyEntity>> {
+    const { data: foundCompany } = await this.findOne(id);
+
+    const data = await this.repository.delete(foundCompany);
+
+    return new ResData<CompanyEntity>(
+      'Deleted successfully',
+      HttpStatus.OK,
+      data,
+    );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} company`;
+  async update(id: ID, dto: CreateCompanyDto): Promise<ResData<CompanyEntity>> {
+    const { data: foundCompany } = await this.findOne(id);
+
+    const entity = await this.repository.createEntity(dto);
+
+    const updatedCompany = Object.assign(foundCompany, entity);
+
+    const data = await this.repository.update(updatedCompany);
+
+    return new ResData<CompanyEntity>(
+      'Updated successfully',
+      HttpStatus.OK,
+      data,
+    );
   }
 }
