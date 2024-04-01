@@ -8,7 +8,7 @@ export class FileEntity extends BaseEntity {
   url: string;
 
   @Column({ type: 'text', nullable: false })
-  mimeType: string;
+  mimetype: string;
 
   @Column({ type: 'int', nullable: false })
   size: number;
@@ -18,5 +18,5 @@ export class FileEntity extends BaseEntity {
     nullable: true,
   })
   @JoinColumn({ name: 'car_id' })
-  car: CarEntity;
+  car: CarEntity; 
 }

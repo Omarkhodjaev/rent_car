@@ -13,9 +13,14 @@ import { TransactionEntity } from './modules/transaction/entities/transaction.en
 import { FileEntity } from './modules/file/entities/file.entity';
 import { ModelEntity } from './modules/model/entities/model.entity';
 import { CompanyEntity } from './modules/company/entities/company.entity';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'upload'),
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
