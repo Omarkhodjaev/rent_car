@@ -14,8 +14,6 @@ export class FileService implements IFileService {
   ) {}
   async create(createFileDto: any): Promise<ResData<FileEntity>> {
     const entity = await this.repository.createEntity(createFileDto);
-    console.log(entity);
-    
     const data = await this.repository.create(entity);
 
     return new ResData('Created Successfully', HttpStatus.CREATED, data);

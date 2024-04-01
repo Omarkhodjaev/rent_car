@@ -9,6 +9,9 @@ import {
   FileTypeValidator,
   Body,
   Inject,
+  Param,
+  ParseIntPipe,
+  Delete,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -55,7 +58,7 @@ export class FileController {
     @Body() dto: any,
   ) {
     const data = {
-      url: `http://localhost:${config.serverPort}/${file.filename}`,
+      url: file.path,
       mimetype: file.mimetype,
       size: file.size,
       car: Number(dto.carId),
@@ -71,13 +74,13 @@ export class FileController {
     return await this.fileService.findAll();
   }
 
-  // @Get(':id')
-  // async findOne(@Param('id', ParseIntPipe) id: number) {
-  //   return await this.fileService.findOneById(id);
-  // }
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return await this.fileService.findOne(id);
+  }
 
-  // @Delete(':id')
-  // remove(@Param('id', ParseIntPipe) id: number) {
-  //   return this.fileService.delete(id);
-  // }
+  @Delete(':id')
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.fileService.remove(id);
+  }
 }
