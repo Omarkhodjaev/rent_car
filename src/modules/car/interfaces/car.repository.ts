@@ -6,7 +6,7 @@ export interface ICarRepository {
   create(dto: CarEntity): Promise<CarEntity>;
   createEntity(dto: CreateCarDto): Promise<CarEntity>;
   findAll(): Promise<Array<CarEntity>>;
-  findAllByCompanyId(): Promise<Array<CarEntity>>;
+  findAllByCompanyId(companyId): Promise<Array<CarEntity>>;
   findOneById(id: ID): Promise<CarEntity>;
   delete(dto: CarEntity): Promise<CarEntity>;
   update(dto: CarEntity): Promise<CarEntity>;

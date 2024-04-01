@@ -1,5 +1,4 @@
 import { Entity, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
-import { FileEntity } from 'src/modules/file/entities/file.entity'; // Correct the path if needed
 import { ModelEntity } from 'src/modules/model/entities/model.entity'; // Correct the path if needed
 import { BaseEntity } from 'src/common/database/base.entity';
 import { CompanyEntity } from 'src/modules/company/entities/company.entity';
@@ -16,17 +15,21 @@ export class CarEntity extends BaseEntity {
   @Column({ type: 'json', nullable: true })
   info: object;
 
-  @ManyToOne(() => ModelEntity, (ModelEntity) => ModelEntity.cars)
+  @ManyToOne(() => ModelEntity, (ModelEntity) => ModelEntity.cars, {
+    nullable: true,
+  })
   @JoinColumn({ name: 'model_id' })
-  model: ModelEntity;
+  model: number;
 
-  @ManyToOne(() => CompanyEntity, (CompanyEntity) => CompanyEntity.cars)
+  @ManyToOne(() => CompanyEntity, (CompanyEntity) => CompanyEntity.cars, {
+    nullable: true,
+  })
   @JoinColumn({ name: 'company_id' })
-  company: CompanyEntity;
+  company: number;
 
   @OneToMany(
     () => TransactionEntity,
     (TransactionEntity) => TransactionEntity.car,
   )
-  transactions: TransactionEntity[];
+  transactions: number[];
 }

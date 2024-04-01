@@ -1,11 +1,26 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { CarService } from './car.service';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Inject,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { CreateCarDto } from './dto/create-car.dto';
 import { UpdateCarDto } from './dto/update-car.dto';
+import { ICarService } from './interfaces/car.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('car')
 @Controller('car')
 export class CarController {
-  constructor(private readonly carService: CarService) {}
+  constructor(
+    @Inject('ICarService')
+    private readonly carService: ICarService,
+  ) {}
 
   @Post()
   create(@Body() createCarDto: CreateCarDto) {
@@ -18,17 +33,20 @@ export class CarController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.carService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.carService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCarDto: UpdateCarDto) {
-    return this.carService.update(+id, updateCarDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateCarDto: UpdateCarDto,
+  ) {
+    return this.carService.update(id, updateCarDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.carService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.carService.remove(id);
   }
 }

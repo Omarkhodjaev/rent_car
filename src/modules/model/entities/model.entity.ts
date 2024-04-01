@@ -24,7 +24,7 @@ export class ModelEntity extends BaseEntity {
     nullable: true,
   })
   @JoinColumn({ name: 'company_id' })
-  company: CompanyEntity;
+  company: number;
 
   @OneToMany(() => CarEntity, (CarEntity) => CarEntity.model)
   cars: ModelEntity[];

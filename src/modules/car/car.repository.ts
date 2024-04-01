@@ -3,30 +3,38 @@ import { CreateCarDto } from './dto/create-car.dto';
 import { CarEntity } from './entities/car.entity';
 import { ICarRepository } from './interfaces/car.repository';
 import { Repository } from 'typeorm';
+import { ID } from 'src/common/types/type';
 
 export class CarRepository implements ICarRepository {
   constructor(
     @InjectRepository(CarEntity) private repository: Repository<CarEntity>,
   ) {}
+
   create(dto: CarEntity): Promise<CarEntity> {
     return this.repository.save(dto);
   }
-  createEntity(dto: CreateCarDto): Promise<CarEntity> {
-    throw new Error('Method not implemented.');
+
+  async createEntity(dto: CreateCarDto): Promise<CarEntity> {
+    const entity: CarEntity = await this.repository.create(dto);
+    return entity;
   }
-  findAll(): Promise<CarEntity[]> {
-    throw new Error('Method not implemented.');
+
+  async findAll(): Promise<CarEntity[]> {
+    return this.repository.find();
   }
-  findAllByCompanyId(): Promise<CarEntity[]> {
-    throw new Error('Method not implemented.');
+
+  async findAllByCompanyId(company: ID): Promise<CarEntity[]> {
+    return this.repository.find({ where: { company } });
   }
-  findOneById(id: number): Promise<CarEntity> {
-    throw new Error('Method not implemented.');
+
+  async findOneById(id: number): Promise<CarEntity> {
+    return this.repository.findOneBy({ id });
   }
-  delete(dto: CarEntity): Promise<CarEntity> {
-    throw new Error('Method not implemented.');
+
+  async delete(dto: CarEntity): Promise<CarEntity> {
+    return this.repository.remove(dto);
   }
-  update(dto: CarEntity): Promise<CarEntity> {
-    throw new Error('Method not implemented.');
+  async update(dto: CarEntity): Promise<CarEntity> {
+    return this.repository.save(dto);
   }
 }
