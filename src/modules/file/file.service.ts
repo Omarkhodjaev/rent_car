@@ -56,6 +56,6 @@ export class FileService implements IFileService {
   }
 
   private async deleteDataInRedis(key: RedisKeys) {
-    await this.cacheManager.delete(key);
+    await this.cacheManager.del(key);
   }
 }
