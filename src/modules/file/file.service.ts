@@ -6,13 +6,17 @@ import { FileEntity } from './entities/file.entity';
 import { ID } from 'src/common/types/type';
 import { FileNotFounException } from './exception/file.exception';
 import * as fs from 'fs';
+import { RedisKeys } from 'src/common/enums/enum';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class FileService implements IFileService {
   constructor(
     @Inject('IFileRepository') private readonly repository: IFileRepository,
+    @Inject('CACHE_MANAGER') private cacheManager: Cache,
   ) {}
   async create(createFileDto: any): Promise<ResData<FileEntity>> {
+    await this.deleteDataInRedis(RedisKeys.All_FILES);
     const entity = await this.repository.createEntity(createFileDto);
     const data = await this.repository.create(entity);
 
@@ -36,6 +40,7 @@ export class FileService implements IFileService {
 
   async remove(id: number): Promise<ResData<FileEntity>> {
     const { data: foundFile } = await this.findOne(id);
+    await this.deleteDataInRedis(RedisKeys.All_FILES);
 
     if (!foundFile) {
       throw new FileNotFounException();
@@ -48,5 +53,9 @@ export class FileService implements IFileService {
     const data = await this.repository.delete(foundFile);
 
     return new ResData('Deleted Successfully', HttpStatus.OK, data);
+  }
+
+  private async deleteDataInRedis(key: RedisKeys) {
+    await this.cacheManager.delete(key);
   }
 }

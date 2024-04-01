@@ -15,9 +15,22 @@ import { ModelEntity } from './modules/model/entities/model.entity';
 import { CompanyEntity } from './modules/company/entities/company.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-yet';
 
 @Module({
   imports: [
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: async () => {
+        const store = await redisStore({
+          socket: { host: '127.0.0.1', port: 6379 },
+          ttl: 10 * 1000,
+        });
+
+        return { store };
+      },
+    }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'upload'),
     }),

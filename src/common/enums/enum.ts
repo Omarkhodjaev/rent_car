@@ -16,3 +16,8 @@ export enum StatusTrackeEnum {
   PROGRESS = 'progress',
   DONE = 'done',
 }
+
+export enum RedisKeys {
+  ALL_USERS = 'ALL_USERS',
+  All_FILES = "ALL_FILES"
+}
