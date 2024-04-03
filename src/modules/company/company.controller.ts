@@ -16,6 +16,11 @@ import { UpdateCompanyDto } from './dto/update-company.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { RedisKeys } from 'src/common/enums/enum';
+import { IUserService } from '../user/interfaces/user.service';
+import { UserNotFoundException } from '../user/exception/user.exception';
+import { IFileService } from '../file/interfaces/file.service';
+import { LogoFounException } from '../file/exception/file.exception';
+import { CompanyAlreadyExistException } from './exception/company.exception';
 
 @ApiTags('company')
 @Controller('company')
@@ -23,10 +28,39 @@ export class CompanyController {
   constructor(
     @Inject('ICompanyService')
     private readonly companyService: CompanyService,
+    @Inject('IUserService')
+    private readonly userService: IUserService,
+    @Inject('IFileService')
+    private readonly fileService: IFileService,
   ) {}
 
   @Post()
-  create(@Body() createCompanyDto: CreateCompanyDto) {
+  async create(@Body() createCompanyDto: CreateCompanyDto) {
+    const { data: foundCompany } =
+      await this.companyService.findOneByCompany(createCompanyDto);
+
+    if (foundCompany) {
+      throw new CompanyAlreadyExistException();
+    }
+
+    const { data: foundUser } = await this.userService.findOne(
+      createCompanyDto.owner,
+    );
+
+    if (!foundUser) {
+      throw new UserNotFoundException();
+    }
+
+    if (createCompanyDto.logo) {
+      const { data: foundLogo } = await this.fileService.findOne(
+        createCompanyDto.logo,
+      );
+
+      if (!foundLogo) {
+        throw new LogoFounException();
+      }
+    }
+
     return this.companyService.create(createCompanyDto);
   }
   @UseInterceptors(CacheInterceptor)

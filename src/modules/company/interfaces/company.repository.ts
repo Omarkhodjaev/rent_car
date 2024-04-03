@@ -9,4 +9,5 @@ export interface ICompanyRepository {
   findOneById(id: ID): Promise<CompanyEntity>;
   delete(dto: CompanyEntity): Promise<CompanyEntity>;
   update(dto: CompanyEntity): Promise<CompanyEntity>;
+  findOneByName(name: string): Promise<CompanyEntity>;
 }

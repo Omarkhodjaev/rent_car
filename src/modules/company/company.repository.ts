@@ -10,9 +10,16 @@ export class CompanyRepository implements ICompanyRepository {
     @InjectRepository(CompanyEntity)
     private repository: Repository<CompanyEntity>,
   ) {}
+  async findOneByName(name: string): Promise<CompanyEntity> {
+    return await this.repository.findOne({
+      where: {
+        name: name,
+      },
+    });
+  }
 
-  create(dto: CompanyEntity): Promise<CompanyEntity> {
-    return this.repository.save(dto);
+  async create(dto: CompanyEntity): Promise<CompanyEntity> {
+    return await this.repository.save(dto);
   }
 
   async createEntity(dto: CreateCompanyDto): Promise<CompanyEntity> {
@@ -21,17 +28,17 @@ export class CompanyRepository implements ICompanyRepository {
   }
 
   async findAll(): Promise<CompanyEntity[]> {
-    return this.repository.find();
+    return await this.repository.find();
   }
 
   async findOneById(id: ID): Promise<CompanyEntity> {
-    return this.repository.findOneBy({ id });
+    return await this.repository.findOneBy({ id });
   }
 
   async delete(dto: CompanyEntity): Promise<CompanyEntity> {
-    return this.repository.remove(dto);
+    return await this.repository.remove(dto);
   }
   async update(dto: CompanyEntity): Promise<CompanyEntity> {
-    return this.repository.save(dto);
+    return await this.repository.save(dto);
   }
 }

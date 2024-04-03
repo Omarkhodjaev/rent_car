@@ -8,14 +8,26 @@ import { ID } from 'src/common/types/type';
 import { CompanyNotFoundException } from './exception/company.exception';
 import { Cache } from 'cache-manager';
 import { RedisKeys } from 'src/common/enums/enum';
+import { ICompanyService } from './interfaces/company.service';
 
 @Injectable()
-export class CompanyService {
+export class CompanyService implements ICompanyService {
   constructor(
     @Inject('ICompanyRepository')
     private readonly repository: ICompanyRepository,
     @Inject('CACHE_MANAGER') private cacheManager: Cache,
   ) {}
+
+  async findOneByCompany(
+    dto: CreateCompanyDto,
+  ): Promise<ResData<CompanyEntity>> {
+    const data = await this.repository.findOneByName(dto.name);
+    return new ResData<CompanyEntity>(
+      'found successfully',
+      HttpStatus.OK,
+      data,
+    );
+  }
 
   async create(dto: CreateCompanyDto): Promise<ResData<CompanyEntity>> {
     await this.deleteDataInRedis(RedisKeys.ALL_COMPANIES);

@@ -14,3 +14,9 @@ export class FileNotFounException extends HttpException {
     super(`File not found`, HttpStatus.NOT_FOUND);
   }
 }
+
+export class LogoFounException extends HttpException {
+  constructor() {
+    super(`Logo not found`, HttpStatus.NOT_FOUND);
+  }
+}
