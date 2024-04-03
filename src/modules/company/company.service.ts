@@ -33,6 +33,8 @@ export class CompanyService implements ICompanyService {
     await this.deleteDataInRedis(RedisKeys.ALL_COMPANIES);
 
     const entity = await this.repository.createEntity(dto);
+    console.log(entity);
+    
     const data = await this.repository.create(entity);
 
     return new ResData<CompanyEntity>(

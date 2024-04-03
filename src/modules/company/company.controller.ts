@@ -51,7 +51,8 @@ export class CompanyController {
       throw new UserNotFoundException();
     }
 
-    if (createCompanyDto.logo) {
+    if (createCompanyDto.logo || createCompanyDto.logo === 0) {
+      
       const { data: foundLogo } = await this.fileService.findOne(
         createCompanyDto.logo,
       );
@@ -60,6 +61,7 @@ export class CompanyController {
         throw new LogoFounException();
       }
     }
+    
 
     return this.companyService.create(createCompanyDto);
   }

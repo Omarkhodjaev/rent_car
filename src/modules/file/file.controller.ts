@@ -61,13 +61,13 @@ export class FileController {
     const data = {
       url: file.path,
       mimetype: file.mimetype,
-      size: file.size,
-      if(car) {
-        car: Number(dto.carId);
-      },
+      size: Number(file.size),
+      car: Number(dto.car),
       createdAt: new Date(),
       lastEditedAt: new Date(),
     };
+
+    console.log(data);
 
     return await this.fileService.create(data);
   }
