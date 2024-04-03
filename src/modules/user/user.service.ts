@@ -79,7 +79,6 @@ export class UserService implements IUserService {
     const updatedUser = Object.assign(foundUser, dto);
     const userEntity = await this.repository.createEntity(updatedUser);
 
-    console.log(userEntity);
 
     const data = await this.repository.update(userEntity);
 
