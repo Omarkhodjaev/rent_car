@@ -31,9 +31,9 @@ export class ModelController {
 
   @Post()
   async create(@Body() createModelDto: CreateModelDto) {
-    // if (createModelDto.company) {
-    //   await this.companyService.findOne(createModelDto.company);
-    // }
+    if (createModelDto.company || createModelDto.company === 0) {
+      await this.companyService.findOne(createModelDto.company);
+    }
 
     return this.modelService.create(createModelDto);
   }
