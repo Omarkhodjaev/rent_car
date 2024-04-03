@@ -1,35 +1,70 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { IUserService } from './interfaces/user.service';
 import { ResData } from 'src/lib/resData';
-import { CreateAuthDto } from '../auth/dto/create-auth.dto';
+import { CreateAuthDto, loginDto } from '../auth/dto/create-auth.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { Cache } from 'cache-manager';
 import { ID } from 'src/common/types/type';
-import { UserNotFoundException } from './exception/user.exception';
+import {
+  UserAlreadyExistException,
+  UserNotFoundException,
+} from './exception/user.exception';
 import { IUserRepository } from './interfaces/user.repository';
 import { RedisKeys } from 'src/common/enums/enum';
+import { IFileService } from '../file/interfaces/file.service';
+import { ILoginData, IRegister } from '../auth/interface/response.interface';
+import { generateToken } from 'src/lib/jwt';
 
 @Injectable()
 export class UserService implements IUserService {
   constructor(
     @Inject('IUserRepository')
     private readonly repository: IUserRepository,
-    @Inject('CACHE_MANAGER') private cacheManager: Cache,
+    @Inject('CACHE_MANAGER')
+    private cacheManager: Cache,
+    @Inject('IFileService')
+    private fileService: IFileService,
   ) {}
 
-  async create(dto: CreateAuthDto): Promise<ResData<UserEntity>> {
+  async create(dto: CreateAuthDto): Promise<ResData<IRegister>> {
+    const { data: foundUser } = await this.findByPhoneNumber(dto.phone);
+
+    if (foundUser) {
+      throw new UserAlreadyExistException();
+    }
+
     await this.deleteDataInRedis(RedisKeys.ALL_USERS);
+
+    if (dto.avatar) {
+      await this.fileService.findOne(dto.avatar);
+    }
 
     const userEntity = await this.repository.createEntity(dto);
 
     const data = await this.repository.create(userEntity);
 
-    return new ResData<UserEntity>(
-      'Created Successfully',
-      HttpStatus.CREATED,
+    const token = await generateToken(data.id);
+
+    return new ResData<IRegister>('Created Successfully', HttpStatus.CREATED, {
       data,
-    );
+      token,
+    });
+  }
+
+  async login(dto: loginDto): Promise<ResData<ILoginData>> {
+    const { data: foundUser } = await this.findByPhoneNumber(dto.phone);
+
+    if (!foundUser) {
+      throw new UserNotFoundException();
+    }
+
+    const token = await generateToken(foundUser.id);
+
+    return new ResData<ILoginData>('Login Successfully', HttpStatus.OK, {
+      data: foundUser,
+      token,
+    });
   }
 
   async update(id: ID, dto: UpdateUserDto): Promise<ResData<UserEntity>> {

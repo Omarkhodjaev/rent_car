@@ -38,7 +38,7 @@ export class FileController {
           format: 'binary',
           nullable: false,
         },
-        carId: {
+        car: {
           type: 'number',
           nullable: true,
         },
@@ -62,7 +62,9 @@ export class FileController {
       url: file.path,
       mimetype: file.mimetype,
       size: file.size,
-      car: Number(dto.carId),
+      if(car) {
+        car: Number(dto.carId);
+      },
       createdAt: new Date(),
       lastEditedAt: new Date(),
     };

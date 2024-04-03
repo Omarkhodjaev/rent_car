@@ -1,6 +1,7 @@
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
+import { config } from 'src/common/config';
 
-const jwtKey = 'ok';
+const jwtKey = config.jwtSecretKey;
 
 export const generateToken = (data: any) => {
   const token = jwt.sign(

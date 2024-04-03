@@ -14,9 +14,9 @@ export class FileEntity extends BaseEntity {
   size: number;
 
   @ManyToOne(() => CarEntity, (car) => car.id, {
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
     nullable: true,
   })
   @JoinColumn({ name: 'car_id' })
-  car: CarEntity; 
+  car: CarEntity;
 }

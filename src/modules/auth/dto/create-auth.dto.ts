@@ -7,8 +7,6 @@ import {
   IsString,
 } from 'class-validator';
 import { RoleEnum } from 'src/common/enums/enum';
-import { CompanyEntity } from 'src/modules/company/entities/company.entity';
-import { FileEntity } from 'src/modules/file/entities/file.entity';
 
 export class CreateAuthDto {
   @ApiProperty({
@@ -33,6 +31,7 @@ export class CreateAuthDto {
   role: RoleEnum;
 
   @ApiProperty({ type: Number })
+  @IsOptional()
   @IsNumber()
   avatar: number;
 
@@ -40,4 +39,13 @@ export class CreateAuthDto {
   @IsNumber()
   @IsOptional()
   company: number;
+}
+
+export class loginDto {
+  @ApiProperty({
+    type: String,
+  })
+  @IsString()
+  @IsNotEmpty()
+  phone: string;
 }
